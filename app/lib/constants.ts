@@ -20,7 +20,7 @@ const baseConfig = {
     speak: {
       provider: {
         type: "cartesia",
-        model_id: "sonic-2",
+        model_id: "sonic-3",
         voice: {
           mode: "id",
           id: "f4a3a8e4-694c-4c45-9ca0-27caf97901b5"
@@ -30,7 +30,7 @@ const baseConfig = {
       endpoint: {
         url: "https://api.cartesia.ai/tts/bytes",
         headers: {
-          "x-api-key": "sk_car_prgadwWbKp31CAvTEjceyF"
+          "x-api-key": process.env.NEXT_PUBLIC_CARTESIA_API_KEY || ""
         }
       }
     },
