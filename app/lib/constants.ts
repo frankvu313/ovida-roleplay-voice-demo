@@ -17,7 +17,23 @@ const baseConfig = {
   audio: audioConfig,
   agent: {
     listen: { provider: { type: "deepgram" as const, model: "nova-3" } },
-    speak: { provider: { type: "deepgram" as const, model: "aura-asteria-en" } },
+    speak: {
+      provider: {
+        type: "cartesia",
+        model_id: "sonic-2",
+        voice: {
+          mode: "id",
+          id: "a167e0f3-df7e-4d52-a9c3-f949145efdab"
+        },
+        language: "en"
+      },
+      endpoint: {
+        url: "https://api.cartesia.ai/tts/bytes",
+        headers: {
+          "x-api-key": "sk_car_prgadwWbKp31CAvTEjceyF"
+        }
+      }
+    },
     think: {
       provider: { type: "groq" as const, model: "openai/gpt-oss-20b" },
     },
@@ -83,7 +99,7 @@ const defaultPrompt = `
                 `;
 
 // Prompt URL to load from
-export const PROMPT_URL = "https://raw.githubusercontent.com/Adapt2Thrive/temp-7810cc01-92be-430c-926f-63236f52cd23/refs/heads/main/cbdbc87d-dc80-4b38-8aec-b63dea7026fc.txt";
+export const PROMPT_URL = "https://github.com/tunguyen-ovida/temp-7810cc01-92be-430c-926f-63236f52cd23/blob/main/cbdbc87d-dc80-4b38-8aec-b63dea7026fc.txt";
 
 // Cache to prevent duplicate fetches
 let promptCache: Promise<string> | null = null;

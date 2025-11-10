@@ -46,7 +46,7 @@ export interface AgentConfig {
 }
 
 export interface SpeakConfig {
-  provider: { type: "deepgram"; model: string };
+  provider: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 export interface StsConfig {

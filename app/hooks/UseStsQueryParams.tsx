@@ -30,7 +30,7 @@ export const useStsQueryParams = () => {
 
   const applyParamsToConfig = useCallback(
     (config: StsConfig) => {
-      const { voice, prompt, think_provider, think_model } = params;
+      const { prompt, think_provider, think_model } = params;
 
       return {
         ...config,
@@ -46,10 +46,6 @@ export const useStsQueryParams = () => {
           },
           speak: {
             ...config.agent.speak,
-            provider: {
-              type: "deepgram",
-              ...(voice ? { model: voice } : { model: config.agent.speak.provider.model }),
-            },
           },
         },
       };
