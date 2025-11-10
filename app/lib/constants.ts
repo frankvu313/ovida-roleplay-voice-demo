@@ -35,7 +35,15 @@ const baseConfig = {
       }
     },
     think: {
-      provider: { type: "groq" as const, model: "openai/gpt-oss-20b" },
+      // provider: { type: "groq" as const, model: "openai/gpt-oss-120b" },
+      // "provider": {
+      //   "type": "anthropic",
+      //   "model": "claude-4-5-haiku"
+      // },
+      "provider": {
+        "type": "google",
+        "model": "gemini-2.5-flash"
+      },
     },
   },
   experimental: true,
