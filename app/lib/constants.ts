@@ -19,7 +19,7 @@ const baseConfig = {
     listen: { provider: { type: "deepgram" as const, model: "nova-3" } },
     speak: { provider: { type: "deepgram" as const, model: "aura-asteria-en" } },
     think: {
-      provider: { type: "open_ai" as const, model: "gpt-4o" },
+      provider: { type: "groq" as const, model: "openai/gpt-oss-20b" },
     },
   },
   experimental: true,
