@@ -10,7 +10,7 @@ body {
   overflow-y: auto;
   height: 100%;
   width: 100%;
-  background: black;
+  background: white;
 }
 
 h2 {
@@ -140,8 +140,8 @@ h2 {
 /* Large devices (>=1024px) */
 @media (min-width: 1024px) {
   .orb-animation {
-    width: 421px;
-    height: 421px;
+    width: 400px;
+    height: 400px;
   }
   .active-order .orb-animation {
     width: 250px;
@@ -152,8 +152,8 @@ h2 {
 /* Extra large devices (>=1280px) */
 @media (min-width: 1280px) {
   .orb-animation {
-    width: 421px;
-    height: 421px;
+    width: 400px;
+    height: 400px;
   }
   .active-order .orb-animation {
     width: 250px;
@@ -164,8 +164,8 @@ h2 {
 /* Extra extra large devices (>=1536px) */
 @media (min-width: 1536px) {
   .orb-animation {
-    width: 421px;
-    height: 421px;
+    width: 400px;
+    height: 400px;
   }
   .active-order .orb-animation {
     width: 250px;

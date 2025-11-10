@@ -23,7 +23,7 @@ const AnimatedBackground = ({ children }) => {
         style={{
           position: "relative",
           zIndex: 1,
-          backgroundColor: "black",
+          backgroundColor: "white",
         }}
       >
         {children}

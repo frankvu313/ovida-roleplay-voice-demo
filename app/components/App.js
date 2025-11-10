@@ -141,7 +141,7 @@ export const App = ({
 
       const onOpen = () => {
         const combinedStsConfig = applyParamsToConfig(defaultStsConfig);
-        
+        console.log("Base config:", combinedStsConfig);
         // Add greeting to agent config so Deepgram speaks it when user connects
         if (!greetingAdded.current) {
           combinedStsConfig.agent.greeting = AGENT_GREETING;

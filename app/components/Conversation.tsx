@@ -32,8 +32,8 @@ const ConversationMessageDisplay: FC<{
         {isUserMessage(message) ? <UserIcon /> : <AssistantIcon />}
       </span>
       <p
-        className={`text-gray-200 border py-3 px-6 rounded-2xl ${
-          isUserMessage(message) ? "bg-gray-800 border-gray-700 " : "bg-gray-1000  border-gray-800"
+        className={`text-gray-800 border py-3 px-6 rounded-2xl ${
+          isUserMessage(message) ? "border-gray-200 " : "bg-gray-100  border-gray-400"
         }`}
       >
         {isUserMessage(message)
@@ -72,12 +72,13 @@ function Conversation() {
 
   return (
     <div
-      className="relative mx-auto mt-4 mb-4 z-10 border border-gray-800 rounded-[1px]"
+      className="relative mx-auto mt-4 mb-4 z-10 border border-gray-300 rounded-[1px]"
       style={{
-        background: "linear-gradient(0deg, #16161A 47.8%, #25252B 99.86%)",
+        background: "white",
         width: "48rem",
         height: "calc(100vh - 500px)",
         borderRadius: "16px",
+        boxShadow: "0 0 10px 0 rgba(0, 0, 0, 0.1)",
       }}
     >
       <div className="h-full flex flex-col justify-between">

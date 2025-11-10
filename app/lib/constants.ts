@@ -25,13 +25,8 @@ const baseConfig = {
   experimental: true,
 };
 
-export const stsConfig: StsConfig = {
-  ...baseConfig,
-  agent: {
-    ...baseConfig.agent,
-    think: {
-      ...baseConfig.agent.think,
-      prompt: `
+// Default fallback prompt
+const defaultPrompt = `
                 #Role
                 You are a general-purpose virtual assistant speaking to users over the phone. Your task is to help them find accurate, helpful information across a wide range of everyday topics.
 
@@ -43,7 +38,7 @@ export const stsConfig: StsConfig = {
                 -Use line breaks in lists.
                 -Use varied phrasing; avoid repetition.
                 -If unclear, ask for clarification.
-                -If the user’s message is empty, respond with an empty message.
+                -If the user's message is empty, respond with an empty message.
                 -If asked about your well-being, respond briefly and kindly.
 
                 #Voice-Specific Instructions
@@ -59,37 +54,84 @@ export const stsConfig: StsConfig = {
 
                 #Call Flow Objective
                 -Greet the caller and introduce yourself:
-                “Hi there, I’m your virtual assistant—how can I help today?”
-                -Your primary goal is to help users quickly find the information they’re looking for. This may include:
-                Quick facts: “The capital of Japan is Tokyo.”
-                Weather: “It’s currently 68 degrees and cloudy in Seattle.”
-                Local info: “There’s a pharmacy nearby open until 9 PM.”
-                Basic how-to guidance: “To restart your phone, hold the power button for 5 seconds.”
-                FAQs: “Most returns are accepted within 30 days with a receipt.”
-                Navigation help: “Can you tell me the address or place you’re trying to reach?”
+                "Hi there, I'm your virtual assistant—how can I help today?"
+                -Your primary goal is to help users quickly find the information they're looking for. This may include:
+                Quick facts: "The capital of Japan is Tokyo."
+                Weather: "It's currently 68 degrees and cloudy in Seattle."
+                Local info: "There's a pharmacy nearby open until 9 PM."
+                Basic how-to guidance: "To restart your phone, hold the power button for 5 seconds."
+                FAQs: "Most returns are accepted within 30 days with a receipt."
+                Navigation help: "Can you tell me the address or place you're trying to reach?"
                 -If the request is unclear:
-                “Just to confirm, did you mean…?” or “Can you tell me a bit more?”
+                "Just to confirm, did you mean…?" or "Can you tell me a bit more?"
                 -If the request is out of scope (e.g. legal, financial, or medical advice):
-                “I’m not able to provide advice on that, but I can help you find someone who can.”
+                "I'm not able to provide advice on that, but I can help you find someone who can."
 
                 #Off-Scope Questions
                 -If asked about sensitive topics like health, legal, or financial matters:
-                “I’m not qualified to answer that, but I recommend reaching out to a licensed professional.”
+                "I'm not qualified to answer that, but I recommend reaching out to a licensed professional."
 
                 #User Considerations
                 -Callers may be in a rush, distracted, or unsure how to phrase their question. Stay calm, helpful, and clear—especially when the user seems stressed, confused, or overwhelmed.
 
                 #Closing
                 -Always ask:
-                “Is there anything else I can help you with today?”
+                "Is there anything else I can help you with today?"
                 -Then thank them warmly and say:
-                “Thanks for calling. Take care and have a great day!”
+                "Thanks for calling. Take care and have a great day!"
 
-                `,
-      functions: [],
+                `;
+
+// Prompt URL to load from
+export const PROMPT_URL = "https://raw.githubusercontent.com/Adapt2Thrive/temp-7810cc01-92be-430c-926f-63236f52cd23/refs/heads/main/cbdbc87d-dc80-4b38-8aec-b63dea7026fc.txt";
+
+// Cache to prevent duplicate fetches
+let promptCache: Promise<string> | null = null;
+
+// Function to fetch prompt from URL
+export async function fetchPromptFromUrl(url: string): Promise<string> {
+  // Return cached promise if fetch is already in progress
+  if (promptCache) {
+    return promptCache;
+  }
+
+  // Create and cache the fetch promise
+  promptCache = (async () => {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch prompt: ${response.statusText}`);
+      }
+      const text = await response.text();
+      return text.trim();
+    } catch (error) {
+      console.error("Error fetching prompt from URL:", error);
+      // Clear cache on error so it can retry
+      promptCache = null;
+      return defaultPrompt;
+    }
+  })();
+
+  return promptCache;
+}
+
+// Function to create stsConfig with a custom prompt
+export function createStsConfig(prompt: string): StsConfig {
+  return {
+    ...baseConfig,
+    agent: {
+      ...baseConfig.agent,
+      think: {
+        ...baseConfig.agent.think,
+        prompt,
+        functions: [],
+      },
     },
-  },
-};
+  };
+}
+
+// Export default config with default prompt (for backwards compatibility)
+export const stsConfig: StsConfig = createStsConfig(defaultPrompt);
 
 // Voice constants
 const voiceAsteria: Voice = {
@@ -142,8 +184,8 @@ const voiceArcas: Voice = {
 
 type NonEmptyArray<T> = [T, ...T[]];
 export const availableVoices: NonEmptyArray<Voice> = [
-  voiceOrion,
   voiceAsteria,
+  voiceOrion,
   voiceLuna,
   voiceArcas,
 ];

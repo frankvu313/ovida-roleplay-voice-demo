@@ -1,7 +1,8 @@
 "use client";
-import { Suspense } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { App } from "./components/App";
-import { stsConfig } from "./lib/constants";
+import { createStsConfig, fetchPromptFromUrl, PROMPT_URL, stsConfig } from "./lib/constants";
+import type { StsConfig } from "./utils/deepgramUtils";
 import {
   isConversationMessage,
   useVoiceBot,
@@ -13,6 +14,34 @@ import Header from "./components/Header";
 
 export default function Home() {
   const { messages } = useVoiceBot();
+  const [loadedConfig, setLoadedConfig] = useState<StsConfig>(stsConfig);
+  const [isLoading, setIsLoading] = useState(true);
+  const hasFetchedRef = useRef(false);
+
+  useEffect(() => {
+    // Prevent duplicate calls, especially in React Strict Mode
+    if (hasFetchedRef.current) {
+      return;
+    }
+
+    hasFetchedRef.current = true;
+
+    async function loadPrompt() {
+      try {
+        setIsLoading(true);
+        const prompt = await fetchPromptFromUrl(PROMPT_URL);
+        const config = createStsConfig(prompt);
+        setLoadedConfig(config);
+      } catch (error) {
+        console.error("Failed to load prompt:", error);
+        // Keep using default config on error
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    loadPrompt();
+  }, []);
 
   return (
     <main className="h-dvh flex flex-col justify-between pb-12 md:pb-0">
@@ -28,11 +57,13 @@ export default function Home() {
           <div className="flex-1 flex justify-center items-start md:items-center">
             <div className="md:h-full flex flex-col min-w-[80vw] md:min-w-[30vw] max-w-[80vw] justify-start">
               <Suspense>
-                <App
-                  defaultStsConfig={stsConfig}
-                  className="flex-shrink-0 h-auto items-end"
-                  requiresUserActionToInitialize={isMobile}
-                />
+                {!isLoading && (
+                  <App
+                    defaultStsConfig={loadedConfig}
+                    className="flex-shrink-0 h-auto items-end"
+                    requiresUserActionToInitialize={isMobile}
+                  />
+                )}
               </Suspense>
               {messages.filter(isConversationMessage).length > 0 && <Conversation />}
             </div>
