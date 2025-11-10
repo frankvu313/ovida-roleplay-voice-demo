@@ -23,7 +23,7 @@ const baseConfig = {
         model_id: "sonic-2",
         voice: {
           mode: "id",
-          id: "a167e0f3-df7e-4d52-a9c3-f949145efdab"
+          id: "f4a3a8e4-694c-4c45-9ca0-27caf97901b5"
         },
         language: "en"
       },
