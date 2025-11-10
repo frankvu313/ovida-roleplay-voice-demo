@@ -73,26 +73,36 @@ interface EmotionRendererProps {
 }
 
 export default function EmotionRenderer({ text }: EmotionRendererProps) {
-  // Simply remove emotion tags and [laughter] from the text
+  // Simply remove emotion, speed, volume tags and [laughter] from the text
   const cleanedText = text
     .replace(/<emotion\s+value=["']([^"']+)["']\s*\/?>/gi, '') // Remove emotion tags
+    .replace(/<speed\s+ratio=["']([^"']+)["']\s*\/?>/gi, '') // Remove speed tags
+    .replace(/<volume\s+ratio=["']([^"']+)["']\s*\/?>/gi, '') // Remove volume tags
     .replace(/\[laughter\]/gi, ''); // Remove laughter tags
 
   /* 
   // COMMENTED: Code to convert emotions to icons/emojis
   // Uncomment this section if you want to show emojis instead of removing tags
+  //
+  // Currently removed tags:
+  // - <emotion value="happy"/> etc.
+  // - <speed ratio="1.5"/> etc.
+  // - <volume ratio="2.0"/> etc.
+  // - [laughter]
   
   const processTextWithEmotions = (input: string): React.ReactNode[] => {
     const parts: React.ReactNode[] = [];
     let lastIndex = 0;
     
-    // Pattern to match both <emotion value="x"/> and [laughter]
+    // Pattern to match emotion, speed, volume tags and [laughter]
     const emotionPattern = /<emotion\s+value=["']([^"']+)["']\s*\/?>/g;
+    const speedPattern = /<speed\s+ratio=["']([^"']+)["']\s*\/?>/g;
+    const volumePattern = /<volume\s+ratio=["']([^"']+)["']\s*\/?>/g;
     const laughterPattern = /\[laughter\]/gi;
     
     // Combine patterns
     const combinedPattern = new RegExp(
-      `${emotionPattern.source}|${laughterPattern.source}`,
+      `${emotionPattern.source}|${speedPattern.source}|${volumePattern.source}|${laughterPattern.source}`,
       'gi'
     );
     
