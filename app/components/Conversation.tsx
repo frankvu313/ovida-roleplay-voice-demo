@@ -11,11 +11,17 @@ import { AssistantIcon } from "./icons/AssistantIcon";
 import Latency from "./Latency";
 import { useSearchParams } from "next/navigation";
 import { latencyMeasurementQueryParam } from "app/lib/constants";
+import EmotionRenderer from "./EmotionRenderer";
 
 const ConversationMessageDisplay: FC<{
   message: ConversationMessage;
   firstInSequence: boolean;
-}> = ({ message, firstInSequence }) => (
+}> = ({ message, firstInSequence }) => {
+  const messageContent = isUserMessage(message)
+    ? message.user || "<non-word utterance detected>"
+    : message.assistant;
+
+  return (
   <div
     className={`flex flex-col ${
       isUserMessage(message) ? "ml-8 md:ml-16 items-end" : "mr-8 md:mr-16 items-start"
@@ -31,18 +37,17 @@ const ConversationMessageDisplay: FC<{
       >
         {isUserMessage(message) ? <UserIcon /> : <AssistantIcon />}
       </span>
-      <p
-        className={`text-gray-800 border py-3 px-6 rounded-2xl ${
-          isUserMessage(message) ? "border-gray-200 " : "bg-gray-100  border-gray-400"
-        }`}
-      >
-        {isUserMessage(message)
-          ? message.user || "<non-word utterance detected>"
-          : message.assistant}
-      </p>
-    </div>
+        <div
+          className={`text-gray-800 border py-3 px-6 rounded-2xl ${
+            isUserMessage(message) ? "border-gray-200 " : "bg-gray-100  border-gray-400"
+          } prose prose-sm max-w-none`}
+        >
+          <EmotionRenderer text={messageContent} />
+        </div>
+      </div>
   </div>
 );
+};
 
 const LatencyMessageDisplay: FC<{ message: LatencyMessage }> = ({ message }) => (
   <div className="flex items-center justify-center mt-2 text-gray-200">
