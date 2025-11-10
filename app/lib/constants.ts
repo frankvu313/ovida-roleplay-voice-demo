@@ -98,37 +98,32 @@ const defaultPrompt = `
 
                 `;
 
-// Prompt URL to load from
-export const PROMPT_URL = "https://github.com/tunguyen-ovida/temp-7810cc01-92be-430c-926f-63236f52cd23/blob/main/cbdbc87d-dc80-4b38-8aec-b63dea7026fc.txt";
+// Prompt URL to load from (GitHub API URL for latest content)
+export const PROMPT_URL = "https://api.github.com/repos/Adapt2Thrive/temp-7810cc01-92be-430c-926f-63236f52cd23/contents/cbdbc87d-dc80-4b38-8aec-b63dea7026fc.txt";
 
-// Cache to prevent duplicate fetches
-let promptCache: Promise<string> | null = null;
 
-// Function to fetch prompt from URL
+// Function to fetch prompt from GitHub API (gets latest content, no cache issues)
 export async function fetchPromptFromUrl(url: string): Promise<string> {
-  // Return cached promise if fetch is already in progress
-  if (promptCache) {
-    return promptCache;
-  }
-
-  // Create and cache the fetch promise
-  promptCache = (async () => {
-    try {
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error(`Failed to fetch prompt: ${response.statusText}`);
+  try {
+    // Add cache-busting timestamp to avoid browser cache
+    const cacheBuster = `?t=${Date.now()}`;
+    const response = await fetch(url + cacheBuster, {
+      cache: 'no-store',
+      headers: {
+        'Accept': 'application/vnd.github.v3.raw', // Get raw content directly
       }
-      const text = await response.text();
-      return text.trim();
-    } catch (error) {
-      console.error("Error fetching prompt from URL:", error);
-      // Clear cache on error so it can retry
-      promptCache = null;
-      return defaultPrompt;
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Failed to fetch prompt: ${response.statusText}`);
     }
-  })();
-
-  return promptCache;
+    
+    const text = await response.text();
+    return text.trim();
+  } catch (error) {
+    console.error("Error fetching prompt from URL:", error);
+    return defaultPrompt;
+  }
 }
 
 // Function to create stsConfig with a custom prompt
